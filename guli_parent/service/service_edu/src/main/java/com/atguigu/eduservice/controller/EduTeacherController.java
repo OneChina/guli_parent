@@ -1,8 +1,10 @@
 package com.atguigu.eduservice.controller;
 
 
+import com.atguigu.commonutils.R;
 import com.atguigu.eduservice.entity.EduTeacher;
 import com.atguigu.eduservice.service.EduTeacherService;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import java.util.List;
  * @author testjava
  * @since 2021-06-03
  */
+@ApiModel(description = "讲师管理")
 @RestController
 @RequestMapping("/eduservice/edu-teacher")
 public class EduTeacherController {
@@ -30,19 +33,23 @@ public class EduTeacherController {
     //rest风格
     @ApiOperation(value = "所有讲师列表")
     @GetMapping("findAll")
-    public List findAllTeacher() {
+    public R findAllTeacher() {
         //调用service的方法实现查询所有的操作
         List<EduTeacher> list = teacherService.list(null);
-        return list;
+        return R.ok().data("items",list);
     }
 
     //2 逻辑删除讲师的方法
     @ApiOperation(value = "逻辑删除讲师")
     @DeleteMapping("{id}")
-    public boolean removeTeacher(@ApiParam(name = "id", value = "讲师ID", required = true)
+    public R removeTeacher(@ApiParam(name = "id", value = "讲师ID", required = true)
                            @PathVariable String id) {
         boolean flag = teacherService.removeById(id);
-        return flag;
+        if(flag){
+            return R.ok();
+        }
+        else
+            return R.error();
     }
 
 }
